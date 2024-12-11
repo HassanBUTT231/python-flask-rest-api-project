@@ -18,5 +18,17 @@ pipeline {
                 echo "successfully build"
             }
         }
+        stage('Pushing') {
+            steps {
+                echo 'Pushing image to dockerhub'
+                withCredentials([usernamePassword(credentialsId: 'dockerHubCred', passwordVariable: 'dockerHubPass', usernameVariable: 'dockerHubUser')]) {
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                sh "docker tag python-app ${env.dockerHubUser}:python-app"
+                sh "docker push ${env.dockerHubUser}/python-app"
+                }
+
+            }
+        }
+        
     }
 }
